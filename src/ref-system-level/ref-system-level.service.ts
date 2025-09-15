@@ -3,9 +3,9 @@ import { RefSystemLevelModel } from './schema/ref-system-level.schema';
 
 @Injectable()
 export class RefSystemLevelService {
-  public async find() {
-    const limit = 10;
-    const offset = ((1 || 1) - 1) * limit;
+  public async find(query: any) {
+    const limit = parseInt(query.limit) || 10;
+    const offset = ((parseInt(query.page) || 1) - 1) * limit;
     const result = await RefSystemLevelModel.aggregate([
       { $match: { isActive: true } },
       { $facet: { 
@@ -26,5 +26,9 @@ export class RefSystemLevelService {
   public async create(body: any) {
     const data = new RefSystemLevelModel(body)
     return await data.save()
+  }
+
+  public async update(_id: string, body: any) {
+    return await RefSystemLevelModel.updateOne({ _id }, { $set: { ...body } });
   }
 }
